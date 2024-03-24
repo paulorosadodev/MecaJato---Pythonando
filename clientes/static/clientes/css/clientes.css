@@ -1,12 +1,18 @@
 .card-dashboard{
-
+    
     background-color: var(--main-color);
     width: 50%;
     margin-left: 10px;
     margin-top: 40px;
     text-align: center;
     padding: 20px;
+    
+}
 
+.card-dashboard:hover {
+    cursor: pointer;
+    background-color: #8C2E3D;
+    transition: 0.2s;
 }
 
 .text-card{
@@ -30,4 +36,17 @@
     background-color: var(--dark-color);
     padding: 5px;
     font-size: 30px;
+}
+
+#att-cliente {
+    display: none;
+}
+
+#form-att-cliente {
+    margin-top: -30px;
+    display: none;
+}
+
+#form-att-cliente > input{
+    margin-bottom: 30px;
 }
