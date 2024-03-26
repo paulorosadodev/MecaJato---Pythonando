@@ -73,6 +73,36 @@ function dados_clientes() {
 
         email = document.getElementById('email')
         email.value = data['email']
+        
+        div_carros = document.getElementById('carros')
+        div_carros.innerHTML = ''
+
+        if (data['carros'].length == 0) {
+            div_carros.innerHTML = '<p>O cliente não possui carros cadastrados</p>'
+        }
+
+        for (i = 0; i < data['carros'].length; i++) {
+            car = data['carros'][i]
+            div_carros.innerHTML += "<form action='/clientes/update_carro/" + car.pk + "' method='POST'>\
+                                    <div class='row'>\
+                                        <div class='col-md'>\
+                                            <input class='form-control' type='text' name='carro' value='" + car.carro + "'>\
+                                        </div>\
+                                        <div class='col-md'>\
+                                            <input class='form-control' type='text' name='placa' value='" + car.placa + "'>\
+                                        </div>\
+                                        <div class='col-md'>\
+                                            <input class='form-control' type='number' name='ano' value='" + car.ano + "'>\
+                                        </div>\
+                                        <div class='col-md'>\
+                                            <input class='btn btn-success' type='submit' value='Salvar'>\
+                                        </div>\
+                                        </form>\
+                                        <div class='col-md'>\
+                                            <a class='btn btn-danger' href='/clientes/excluir_carro/" + car.pk + "'>Excluir</a>\
+                                        </div>\
+                                    </div><br>"
+        }
     })
 }
 

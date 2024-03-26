@@ -74,14 +74,19 @@
     </div>
 
     <div id="att-cliente">
-        <p></p>
-        <select id="cliente-select" onchange="dados_clientes()" class="form-control">
-            {% for cliente in clientes %}
-                <option value="{{ cliente.id }}">{{cliente.nome}}</option>
-            {% endfor %}
-        </select>
-        <br>
-        <hr>
+        {% if clientes %}
+            <p>Cliente:</p>
+            <select id="cliente-select" onchange="dados_clientes()" class="form-control">
+                <option value="" disabled selected hidden>Selecione um carro</option>
+                {% for cliente in clientes %}
+                    <option value="{{ cliente.id }}">{{cliente.nome}}</option>
+                {% endfor %}
+            </select>
+            <br>
+            <hr>
+        {% else %}
+            <p>Não existe nenhum cliente</p>
+        {% endif %}
         <div id="form-att-cliente">
             <p>Nome:</p>
             <input type="text" id="nome" class="form-control">
@@ -91,6 +96,10 @@
             <input type="email" id="email" class="form-control">
             <p>CPF:</p>
             <input type="text" id="cpf" class="form-control">
+            <hr>
+            <h3>Carros:</h3>
+            <div id="carros">
+            </div>
         </div>
     </div>
 

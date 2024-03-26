@@ -224,6 +224,7 @@
 .home-section{
   position: relative;
   min-height: 100vh;
+  height: auto;
   top: 0;
   background: #2A2A2A;
   left: 78px;

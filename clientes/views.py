@@ -1,9 +1,11 @@
 from django.shortcuts import render, redirect
+from django.urls import reverse
 from django.http import HttpResponse, JsonResponse
 from .models import Cliente, Carro
 import re
 from django.core import serializers
 import json
+from django.views.decorators.csrf import csrf_exempt
 
 # Create your views here.
 def clientes(request):
@@ -58,17 +60,50 @@ def att_cliente(request):
     id_cliente = request.POST.get('id_cliente')
 
     cliente = Cliente.objects.get(id=id_cliente)
-    
+    carros = Carro.objects.filter(cliente=cliente)
+    carro_list = [{'carro': carro.carro, 'placa': carro.placa, 'ano': carro.ano, 'pk': carro.id} for carro in carros]
     # cliente = Cliente.objects.filter(id=id_cliente)
 
     # cliente_json = json.loads(serializers.serialize('json', cliente))[0]['fields']
+    # carros_json = json.loads(serializers.serialize('json', carros))
 
     ctx = {
         'nome': cliente.nome, 
         'sobrenome': cliente.sobrenome,
         'email': cliente.email,
         'cpf': cliente.cpf,
+        'carros': carro_list,
     }
 
     # return JsonResponse(cliente_json)
     return JsonResponse(ctx)
+
+@csrf_exempt
+def att_carro(request, id):
+    if request.method == 'POST':
+        novoNome = request.POST.get('carro')
+        novaPlaca = request.POST.get('placa')
+        novoAno = request.POST.get('ano')
+
+        carro = Carro.objects.get(id=id)
+
+        carros = Carro.objects.filter(placa=novaPlaca).exclude(id=id)
+        if carros.exists():
+            return HttpResponse('Placa já existente')
+
+        carro.carro = novoNome
+        carro.placa = novaPlaca
+        carro.ano = novoAno
+
+        carro.save()
+
+        return HttpResponse('Dados alterados com sucesso')
+
+@csrf_exempt
+def dlt_carro(request, id):
+    try:
+        carro = Carro.objects.get(id=id)
+        carro.delete()
+        return redirect(reverse('clientes') + f'?aba=att_cliente&id_cliente={id}')
+    except:
+        return redirect(reverse('clientes') + f'?aba=att_cliente&id_cliente={id}')
