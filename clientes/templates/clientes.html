@@ -77,7 +77,7 @@
         {% if clientes %}
             <p>Cliente:</p>
             <select id="cliente-select" onchange="dados_clientes()" class="form-control">
-                <option value="" disabled selected hidden>Selecione um carro</option>
+                <option value="" disabled selected hidden>Selecione um cliente</option>
                 {% for cliente in clientes %}
                     <option value="{{ cliente.id }}">{{cliente.nome}}</option>
                 {% endfor %}
@@ -88,6 +88,7 @@
             <p>Não existe nenhum cliente</p>
         {% endif %}
         <div id="form-att-cliente">
+            <input type="hidden" id="id">
             <p>Nome:</p>
             <input type="text" id="nome" class="form-control">
             <p>Sobrenome:</p>
@@ -96,8 +97,12 @@
             <input type="email" id="email" class="form-control">
             <p>CPF:</p>
             <input type="text" id="cpf" class="form-control">
-            <hr>
-            <h3>Carros:</h3>
+            <div id="message_update">
+
+            </div>
+            <input onclick="update_cliente()" type="submit" value="Salvar" class="btn btn-success">
+            <hr style="background-color: gray;">
+            <h2>Carros:</h2>
             <div id="carros">
             </div>
         </div>

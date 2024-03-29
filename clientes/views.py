@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
 from django.http import HttpResponse, JsonResponse
 from .models import Cliente, Carro
@@ -58,7 +58,6 @@ def clientes(request):
 
 def att_cliente(request):
     id_cliente = request.POST.get('id_cliente')
-
     cliente = Cliente.objects.get(id=id_cliente)
     carros = Carro.objects.filter(cliente=cliente)
     carro_list = [{'carro': carro.carro, 'placa': carro.placa, 'ano': carro.ano, 'pk': carro.id} for carro in carros]
@@ -72,6 +71,7 @@ def att_cliente(request):
         'sobrenome': cliente.sobrenome,
         'email': cliente.email,
         'cpf': cliente.cpf,
+        'id': cliente.id,
         'carros': carro_list,
     }
 
@@ -107,3 +107,35 @@ def dlt_carro(request, id):
         return redirect(reverse('clientes') + f'?aba=att_cliente&id_cliente={id}')
     except:
         return redirect(reverse('clientes') + f'?aba=att_cliente&id_cliente={id}')
+
+def update_cliente(request, id):
+    if request.method == 'POST':
+        body = json.loads(request.body)
+
+        nome = body['nome']
+        sobrenome = body['sobrenome']
+        email = body['email']
+        cpf = body['cpf']
+
+        if not re.fullmatch(re.compile(r'([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.[A-Z|a-z]{2,})+'), email):
+            return JsonResponse({'erro':'Email inválido'})
+        
+        if Cliente.objects.filter(email=email).exclude(id=id).first():
+            return JsonResponse({'erro':'Email já cadastrado'})
+        
+        if Cliente.objects.filter(nome=nome).exclude(id=id).first():
+            return JsonResponse({'erro':'Usuário já cadastrado'})
+
+        cliente = get_object_or_404(Cliente, id=id)
+
+        try:
+            cliente.nome = nome
+            cliente.sobrenome = sobrenome
+            cliente.email = email
+            cliente.cpf = cpf
+
+            cliente.save()
+
+            return JsonResponse({'status': '200','nome': nome, 'sobrenome': sobrenome, 'email': email, 'cpf': cpf})
+        except:
+            return JsonResponse({'status': '500'}) 
